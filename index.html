@@ -132,6 +132,13 @@
     </div>
   </div>
 
+  <!-- ============ ONLINE SESSIONS NOTE ============ -->
+  <div class="bg-sage-light border-b border-sage/30">
+    <div class="max-w-2xl mx-auto px-6 py-2.5 text-center text-xs sm:text-sm text-forest font-medium">
+      All sessions are held online — via WhatsApp call or Zoom, with the link shared after booking.
+    </div>
+  </div>
+
   <!-- ============ MAIN ============ -->
   <main class="max-w-2xl mx-auto px-4 sm:px-6 py-8">
 
@@ -154,17 +161,18 @@
               <span class="font-display text-lg">Free Clarity Call</span>
               <span class="text-xs font-semibold bg-sage-light text-forest px-2 py-1 rounded-full">Free</span>
             </div>
-            <p class="text-sm text-muted mb-3">A short, no-pressure conversation to understand what you need.</p>
+            <p class="text-sm text-muted mb-3">A short, no-pressure conversation to understand what you need. Held online via WhatsApp call or Zoom.</p>
             <p class="text-xs text-forest font-medium">20 minutes &middot; 11:00 AM – 1:30 PM IST</p>
           </button>
 
           <button type="button" data-service="session" class="service-card text-left border-2 border-sage/40 rounded-xl p-5 bg-white">
             <div class="flex items-center justify-between mb-2">
               <span class="font-display text-lg">1-on-1 Counseling</span>
-              <span class="text-xs font-semibold bg-blush/50 text-forest px-2 py-1 rounded-full">Paid</span>
+              <span class="text-xs font-semibold bg-blush/50 text-forest px-2 py-1 rounded-full">₹800 / session</span>
             </div>
-            <p class="text-sm text-muted mb-3">A full session focused on the outcomes you want to create.</p>
+            <p class="text-sm text-muted mb-3">A full session focused on the outcomes you want to create. Held online via WhatsApp call or Zoom.</p>
             <p class="text-xs text-forest font-medium">60 minutes &middot; 3:00 PM – 6:00 PM IST</p>
+            <p class="text-xs text-muted mt-1">Subsequent sessions, if needed, are also ₹800 each.</p>
           </button>
         </div>
 
@@ -297,7 +305,7 @@
         </div>
         <h2 class="font-display text-2xl mb-2">You're booked</h2>
         <p id="doneSummary" class="text-sm text-muted mb-6 max-w-sm mx-auto leading-relaxed"></p>
-        <p class="text-xs text-muted mb-6">A confirmation will follow by email or WhatsApp. If you need to reschedule, just reply to that message.</p>
+        <p class="text-xs text-muted mb-6">A confirmation email is on its way. If you need to reschedule, just reply to it — Tasneem may also follow up on WhatsApp before your session.</p>
         <button type="button" id="bookAnother" class="px-6 py-2.5 rounded-full border border-forest text-forest font-semibold text-sm hover:bg-sage-light transition">Book another session</button>
       </section>
 
@@ -313,7 +321,7 @@
   /* ================= CONFIG ================= */
   const CONFIG = {
     // Paste the Web App URL from your Apps Script deployment here (see setup instructions).
-    GAS_URL: "https://script.google.com/macros/s/AKfycbzmXOdkOpG1jd7Gup9FVP63Jc3JGLejBi9ShrOJcc7Zry6-3sU9LvlsvM1OO3nSQYbCFw/exec",
+    GAS_URL: "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE",
     MIN_NOTICE_HOURS: 12,
     MAX_ADVANCE_DAYS: 30,
     IST_OFFSET_MS: 5.5 * 60 * 60 * 1000,
@@ -323,6 +331,7 @@
         shortLabel: "Free Clarity Call",
         duration: 20,
         windowLabel: "11:00 AM – 1:30 PM IST",
+        priceLabel: "Free",
         slots: [
           { start: "11:00", end: "11:20" },
           { start: "11:25", end: "11:45" },
@@ -337,6 +346,7 @@
         shortLabel: "1-on-1 Counseling Session",
         duration: 60,
         windowLabel: "3:00 PM – 6:00 PM IST",
+        priceLabel: "₹800 / session",
         slots: [
           { start: "15:00", end: "16:00" },
           { start: "16:00", end: "17:00" },
@@ -345,6 +355,8 @@
       },
     },
   };
+
+  const SESSION_MODE = "Online via WhatsApp call or Zoom";
 
   const FOCUS_AREAS = [
     "Relationships", "Career Direction", "Stress & Burnout",
@@ -621,8 +633,9 @@
     const service = CONFIG.SERVICES[state.service];
     const dateStr = `${MONTH_NAMES[state.month-1]} ${state.day}, ${state.year}`;
     $('#summaryBox').innerHTML = `
-      <span class="font-semibold">${service.shortLabel}</span><br/>
-      ${dateStr} &middot; ${to12h(state.slot.start)} – ${to12h(state.slot.end)} IST
+      <span class="font-semibold">${service.shortLabel}</span> &middot; ${service.priceLabel}<br/>
+      ${dateStr} &middot; ${to12h(state.slot.start)} – ${to12h(state.slot.end)} IST<br/>
+      <span class="text-xs">${SESSION_MODE}</span>
     `;
   }
 
@@ -720,6 +733,8 @@
       focusAreas: Array.from(state.focusAreas).join(', '),
       notes: $('#notes').value.trim(),
       status: 'Confirmed',
+      fee: service.priceLabel,
+      sessionMode: SESSION_MODE,
     };
 
     if(!CONFIG.GAS_URL || CONFIG.GAS_URL.indexOf('PASTE_') === 0){
@@ -739,7 +754,8 @@
       try{ result = await res.json(); }catch(e){ result = { result: 'success' }; }
       if(result.result === 'error') throw new Error(result.message || 'The server could not save your booking.');
 
-      $('#doneSummary').textContent = `${service.shortLabel} on ${MONTH_NAMES[state.month-1]} ${state.day}, ${state.year} at ${to12h(state.slot.start)} IST. A confirmation is on its way to ${payload.email}.`;
+      const feeNote = service.priceLabel === 'Free' ? '' : ` The session fee is ${service.priceLabel}.`;
+      $('#doneSummary').textContent = `${service.shortLabel} on ${MONTH_NAMES[state.month-1]} ${state.day}, ${state.year} at ${to12h(state.slot.start)} IST — ${SESSION_MODE}.${feeNote} A confirmation is on its way to ${payload.email}.`;
       goToStep(4);
     }catch(err){
       console.error(err);
@@ -773,3 +789,4 @@
 </script>
 </body>
 </html>
+

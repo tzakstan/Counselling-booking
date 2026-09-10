@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Book a Session — Tasneem Taher Zakavi, Psychological Counselor</title>
+<meta name="description" content="Book a free clarity call or a 1-on-1 counseling session with Tasneem Taher Zakavi." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          cream: '#FAF6EE',
+          paper: '#FFFDF9',
+          forest: { DEFAULT: '#2F4A3D', dark: '#203327', light: '#3E5F4E' },
+          sage: { DEFAULT: '#8FA88A', light: '#E7EEE2', dark: '#6C8368' },
+          blush: { DEFAULT: '#EFC9C4', dark: '#DCA39C' },
+          amber: { DEFAULT: '#B8863B', light: '#F5E9D6' },
+          ink: '#2C2A25',
+          muted: '#6B6559',
+        },
+        fontFamily: {
+          display: ['Fraunces', 'serif'],
+          body: ['Manrope', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  :root { color-scheme: light; }
+  body { font-family: 'Manrope', sans-serif; background-color: #FAF6EE; }
+  .font-display { font-family: 'Fraunces', serif; }
+
+  /* Leaf motif */
+  .leaf-motif { opacity: 0.9; }
+
+  /* Focus visibility */
+  button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid #2F4A3D;
+    outline-offset: 2px;
+  }
+
+  /* Step panels */
+  .step-panel { display: none; }
+  .step-panel.active { display: block; animation: fadeIn 0.35s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
+
+  /* Stone step indicator */
+  .stone {
+    width: 2.5rem; height: 2.5rem; border-radius: 9999px;
+    background: linear-gradient(160deg, #C9C2B4, #A9A18F);
+    display: flex; align-items: center; justify-content: center;
+    color: #FAF6EE; font-weight: 700; font-size: 0.85rem;
+    box-shadow: inset 0 -3px 4px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+  }
+  .stone.done { background: linear-gradient(160deg, #6C8368, #4C5E48); }
+  .stone.current { background: linear-gradient(160deg, #2F4A3D, #203327); box-shadow: 0 0 0 4px #E7EEE2, inset 0 -3px 4px rgba(0,0,0,0.2); }
+
+  /* Service radio cards */
+  .service-card { transition: all 0.2s ease; }
+  .service-card.selected { border-color: #2F4A3D; background-color: #E7EEE2; box-shadow: 0 4px 14px rgba(47,74,61,0.12); }
+
+  /* Focus area chips */
+  .chip { transition: all 0.15s ease; }
+  .chip.selected { background-color: #2F4A3D; color: #FAF6EE; border-color: #2F4A3D; }
+
+  /* Calendar */
+  .cal-day { aspect-ratio: 1 / 1; }
+  .cal-day button {
+    width: 100%; height: 100%; border-radius: 0.6rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; transition: all 0.15s ease;
+  }
+  .cal-day button:not(:disabled):hover { background-color: #E7EEE2; }
+  .cal-day button.selected { background-color: #2F4A3D; color: #FAF6EE; font-weight: 700; }
+  .cal-day button:disabled { color: #C9C4B8; cursor: not-allowed; }
+
+  /* Slot buttons */
+  .slot-btn { transition: all 0.15s ease; }
+  .slot-btn.selected { background-color: #2F4A3D; color: #FAF6EE; border-color: #2F4A3D; }
+  .slot-btn:disabled { opacity: 0.45; cursor: not-allowed; text-decoration: line-through; }
+
+  .spinner {
+    width: 1.1rem; height: 1.1rem; border-radius: 9999px;
+    border: 2px solid rgba(250,246,238,0.4); border-top-color: #FAF6EE;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .step-panel.active { animation: none; }
+    .spinner { animation-duration: 1.4s; }
+  }
+
+  textarea { resize: vertical; }
+</style>
+</head>
+<body class="min-h-screen text-ink">
+
+  <!-- ============ HEADER ============ -->
+  <header class="relative overflow-hidden bg-forest text-cream">
+    <svg class="leaf-motif absolute -top-6 -left-10 w-56 h-56 opacity-20 pointer-events-none" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 180C20 100 60 40 140 20C150 90 120 150 20 180Z" stroke="#FAF6EE" stroke-width="2"/>
+      <path d="M40 160C60 110 90 70 130 45" stroke="#FAF6EE" stroke-width="1.5"/>
+    </svg>
+    <svg class="leaf-motif absolute -bottom-10 -right-10 w-64 h-64 opacity-10 pointer-events-none" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M180 20C180 100 140 160 60 180C50 110 80 50 180 20Z" stroke="#FAF6EE" stroke-width="2"/>
+    </svg>
+    <div class="relative max-w-2xl mx-auto px-6 pt-12 pb-10 text-center">
+      <p class="uppercase tracking-[0.2em] text-xs text-sage-light/80 mb-3">Book a session</p>
+      <h1 class="font-display text-3xl sm:text-4xl leading-tight mb-1">Tasneem Taher Zakavi</h1>
+      <p class="text-sm sm:text-base text-cream/85 mb-5">Psychological Counselor</p>
+      <p class="max-w-md mx-auto text-cream/90 text-sm sm:text-[15px] leading-relaxed">
+        You don't have to do it all alone. Choose a time that works for you — a safe space, a listening ear, and a clear next step forward.
+      </p>
+    </div>
+  </header>
+
+  <!-- ============ SAFETY BANNER ============ -->
+  <div class="bg-amber-light border-y border-amber/30">
+    <div class="max-w-2xl mx-auto px-6 py-3 flex gap-3 items-start text-sm text-ink/90">
+      <svg class="w-5 h-5 flex-shrink-0 mt-0.5 text-amber" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 9V13M12 17H12.01M10.29 3.86L1.82 18A2 2 0 0 0 3.54 21H20.46A2 2 0 0 0 22.18 18L13.71 3.86A2 2 0 0 0 10.29 3.86Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <p><span class="font-semibold">Please note:</span> this service is not equipped for psychiatric or medical emergencies. If you're in crisis, please contact your local emergency helpline immediately.</p>
+    </div>
+  </div>
+
+  <!-- ============ MAIN ============ -->
+  <main class="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+
+    <!-- Step tracker -->
+    <div id="stepTracker" class="flex items-center justify-center gap-3 sm:gap-6 mb-8">
+      <!-- populated by JS -->
+    </div>
+
+    <!-- Form card -->
+    <div id="formCard" class="bg-paper border border-sage/30 rounded-2xl shadow-sm p-5 sm:p-8">
+
+      <!-- STEP 1: Service -->
+      <section id="step1" class="step-panel active">
+        <h2 class="font-display text-xl sm:text-2xl mb-1">Choose your service</h2>
+        <p class="text-muted text-sm mb-5">Pick the kind of conversation that fits where you are right now.</p>
+
+        <div class="grid sm:grid-cols-2 gap-4">
+          <button type="button" data-service="clarity" class="service-card text-left border-2 border-sage/40 rounded-xl p-5 bg-white">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-display text-lg">Free Clarity Call</span>
+              <span class="text-xs font-semibold bg-sage-light text-forest px-2 py-1 rounded-full">Free</span>
+            </div>
+            <p class="text-sm text-muted mb-3">A short, no-pressure conversation to understand what you need.</p>
+            <p class="text-xs text-forest font-medium">20 minutes &middot; 11:00 AM – 1:30 PM IST</p>
+          </button>
+
+          <button type="button" data-service="session" class="service-card text-left border-2 border-sage/40 rounded-xl p-5 bg-white">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-display text-lg">1-on-1 Counseling</span>
+              <span class="text-xs font-semibold bg-blush/50 text-forest px-2 py-1 rounded-full">Paid</span>
+            </div>
+            <p class="text-sm text-muted mb-3">A full session focused on the outcomes you want to create.</p>
+            <p class="text-xs text-forest font-medium">60 minutes &middot; 3:00 PM – 6:00 PM IST</p>
+          </button>
+        </div>
+
+        <div class="flex justify-end mt-6">
+          <button type="button" id="toStep2" disabled class="px-6 py-2.5 rounded-full bg-forest text-cream font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed transition">
+            Continue
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 2: Date & Time -->
+      <section id="step2" class="step-panel">
+        <h2 class="font-display text-xl sm:text-2xl mb-1">Pick a date & time</h2>
+        <p class="text-muted text-sm mb-5">All times shown are in India Standard Time (IST).</p>
+
+        <!-- Calendar -->
+        <div class="border border-sage/30 rounded-xl p-4 mb-5">
+          <div class="flex items-center justify-between mb-3">
+            <button type="button" id="calPrev" aria-label="Previous month" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-sage-light transition disabled:opacity-30 disabled:cursor-not-allowed">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <span id="calLabel" class="font-display text-base"></span>
+            <button type="button" id="calNext" aria-label="Next month" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-sage-light transition disabled:opacity-30 disabled:cursor-not-allowed">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div class="grid grid-cols-7 gap-1 text-center text-[11px] text-muted mb-1">
+            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+          </div>
+          <div id="calGrid" class="grid grid-cols-7 gap-1"></div>
+        </div>
+
+        <!-- Slots -->
+        <div id="slotWrap" class="mb-2">
+          <p id="slotPrompt" class="text-sm text-muted mb-3">Select a date above to see available times.</p>
+          <div id="slotGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+        </div>
+
+        <div class="flex justify-between mt-6">
+          <button type="button" data-back="1" class="px-5 py-2.5 rounded-full border border-sage/50 text-forest font-semibold text-sm hover:bg-sage-light transition">Back</button>
+          <button type="button" id="toStep3" disabled class="px-6 py-2.5 rounded-full bg-forest text-cream font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed transition">Continue</button>
+        </div>
+      </section>
+
+      <!-- STEP 3: Details -->
+      <section id="step3" class="step-panel">
+        <h2 class="font-display text-xl sm:text-2xl mb-1">Your details</h2>
+        <p class="text-muted text-sm mb-5">This information stays confidential and is only used to prepare for your session.</p>
+
+        <form id="detailsForm" class="space-y-5" novalidate>
+          <div>
+            <label for="fullName" class="block text-sm font-semibold mb-1.5">Full name <span class="text-blush-dark">*</span></label>
+            <input type="text" id="fullName" name="fullName" required maxlength="80"
+              class="w-full border border-sage/40 rounded-lg px-4 py-2.5 bg-white focus:border-forest transition"
+              placeholder="Your full name" />
+            <p class="field-error hidden text-xs text-blush-dark mt-1"></p>
+          </div>
+
+          <div>
+            <label for="email" class="block text-sm font-semibold mb-1.5">Email address <span class="text-blush-dark">*</span></label>
+            <input type="email" id="email" name="email" required maxlength="120"
+              class="w-full border border-sage/40 rounded-lg px-4 py-2.5 bg-white focus:border-forest transition"
+              placeholder="you@example.com" />
+            <p class="field-error hidden text-xs text-blush-dark mt-1"></p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold mb-1.5">Phone / WhatsApp number <span class="text-blush-dark">*</span></label>
+            <div class="flex gap-2">
+              <select id="countryCode" class="border border-sage/40 rounded-lg px-2 py-2.5 bg-white focus:border-forest transition text-sm">
+                <option value="+91" selected>🇮🇳 +91</option>
+                <option value="+1">🇺🇸/🇨🇦 +1</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+971">🇦🇪 +971</option>
+                <option value="+65">🇸🇬 +65</option>
+                <option value="+61">🇦🇺 +61</option>
+                <option value="+92">🇵🇰 +92</option>
+                <option value="+880">🇧🇩 +880</option>
+              </select>
+              <input type="tel" id="phone" name="phone" required maxlength="15"
+                class="flex-1 min-w-0 border border-sage/40 rounded-lg px-4 py-2.5 bg-white focus:border-forest transition"
+                placeholder="98765 43210" />
+            </div>
+            <p class="field-error hidden text-xs text-blush-dark mt-1"></p>
+          </div>
+
+          <div>
+            <label for="age" class="block text-sm font-semibold mb-1.5">Age <span class="text-blush-dark">*</span></label>
+            <input type="number" id="age" name="age" required min="5" max="110" inputmode="numeric"
+              class="w-full sm:w-32 border border-sage/40 rounded-lg px-4 py-2.5 bg-white focus:border-forest transition"
+              placeholder="e.g. 28" />
+            <p class="field-error hidden text-xs text-blush-dark mt-1"></p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold mb-2">Primary focus area <span class="text-muted font-normal">(optional, choose any)</span></label>
+            <div id="focusChips" class="flex flex-wrap gap-2"></div>
+          </div>
+
+          <div>
+            <label for="notes" class="block text-sm font-semibold mb-1.5">Brief note <span class="text-muted font-normal">(optional)</span></label>
+            <textarea id="notes" name="notes" rows="3" maxlength="500"
+              class="w-full border border-sage/40 rounded-lg px-4 py-2.5 bg-white focus:border-forest transition"
+              placeholder="Anything specific you'd like to share before our call?"></textarea>
+          </div>
+
+          <label class="flex items-start gap-3 pt-2 cursor-pointer">
+            <input type="checkbox" id="consent" required class="mt-1 w-4 h-4 accent-forest flex-shrink-0" />
+            <span class="text-sm text-ink/90">I understand that this is a confidential consultation and agree to the basic terms of service.</span>
+          </label>
+          <p id="consentError" class="field-error hidden text-xs text-blush-dark -mt-3"></p>
+        </form>
+
+        <div id="summaryBox" class="mt-6 bg-sage-light/60 rounded-xl p-4 text-sm text-forest"></div>
+
+        <div id="submitError" class="hidden mt-4 bg-blush/30 border border-blush-dark/40 text-ink text-sm rounded-lg p-3"></div>
+
+        <div class="flex justify-between mt-6">
+          <button type="button" data-back="2" class="px-5 py-2.5 rounded-full border border-sage/50 text-forest font-semibold text-sm hover:bg-sage-light transition">Back</button>
+          <button type="button" id="submitBtn" class="px-6 py-2.5 rounded-full bg-forest text-cream font-semibold text-sm hover:bg-forest-dark transition flex items-center gap-2">
+            <span id="submitLabel">Confirm booking</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- CONFIRMATION -->
+      <section id="stepDone" class="step-panel text-center py-4">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-sage-light flex items-center justify-center">
+          <svg class="w-7 h-7 text-forest" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h2 class="font-display text-2xl mb-2">You're booked</h2>
+        <p id="doneSummary" class="text-sm text-muted mb-6 max-w-sm mx-auto leading-relaxed"></p>
+        <p class="text-xs text-muted mb-6">A confirmation will follow by email or WhatsApp. If you need to reschedule, just reply to that message.</p>
+        <button type="button" id="bookAnother" class="px-6 py-2.5 rounded-full border border-forest text-forest font-semibold text-sm hover:bg-sage-light transition">Book another session</button>
+      </section>
+
+    </div>
+
+    <p class="text-center text-xs text-muted mt-6">Healthier mind &middot; Better decisions &middot; A more fulfilling life</p>
+  </main>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ================= CONFIG ================= */
+  const CONFIG = {
+    // Paste the Web App URL from your Apps Script deployment here (see setup instructions).
+    GAS_URL: "https://script.google.com/macros/s/AKfycbzmXOdkOpG1jd7Gup9FVP63Jc3JGLejBi9ShrOJcc7Zry6-3sU9LvlsvM1OO3nSQYbCFw/exec",
+    MIN_NOTICE_HOURS: 12,
+    MAX_ADVANCE_DAYS: 30,
+    IST_OFFSET_MS: 5.5 * 60 * 60 * 1000,
+    SERVICES: {
+      clarity: {
+        label: "Free Clarity Call (20 mins)",
+        shortLabel: "Free Clarity Call",
+        duration: 20,
+        windowLabel: "11:00 AM – 1:30 PM IST",
+        slots: [
+          { start: "11:00", end: "11:20" },
+          { start: "11:25", end: "11:45" },
+          { start: "11:50", end: "12:10" },
+          { start: "12:15", end: "12:35" },
+          { start: "12:40", end: "13:00" },
+          { start: "13:05", end: "13:25" },
+        ],
+      },
+      session: {
+        label: "1-on-1 Counseling Session (60 mins)",
+        shortLabel: "1-on-1 Counseling Session",
+        duration: 60,
+        windowLabel: "3:00 PM – 6:00 PM IST",
+        slots: [
+          { start: "15:00", end: "16:00" },
+          { start: "16:00", end: "17:00" },
+          { start: "17:00", end: "18:00" },
+        ],
+      },
+    },
+  };
+
+  const FOCUS_AREAS = [
+    "Relationships", "Career Direction", "Stress & Burnout",
+    "Anxiety / Overwhelm", "Time Management / Procrastination",
+    "Emotional Balance", "Other",
+  ];
+
+  const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+  /* ================= STATE ================= */
+  const state = {
+    step: 1,
+    service: null,
+    year: null, month: null, day: null,
+    slot: null,
+    calYear: null, calMonth: null,
+    focusAreas: new Set(),
+    bookedCache: {},
+    submitting: false,
+  };
+
+  /* ================= DATE / TIME HELPERS (IST) ================= */
+  function pad(n){ return n.toString().padStart(2,'0'); }
+  function nowMs(){ return Date.now(); }
+  function istPartsFromEpoch(epochMs){
+    const shifted = new Date(epochMs + CONFIG.IST_OFFSET_MS);
+    return { y: shifted.getUTCFullYear(), m: shifted.getUTCMonth()+1, d: shifted.getUTCDate(), hh: shifted.getUTCHours(), mm: shifted.getUTCMinutes() };
+  }
+  function istDateTimeToEpoch(y,m,d,hh,mm){
+    return Date.UTC(y, m-1, d, hh, mm, 0) - CONFIG.IST_OFFSET_MS;
+  }
+  function todayIST(){ return istPartsFromEpoch(nowMs()); }
+  function dateKey(y,m,d){ return `${y}-${pad(m)}-${pad(d)}`; }
+  function addDays(y,m,d,days){
+    const dt = new Date(Date.UTC(y,m-1,d));
+    dt.setUTCDate(dt.getUTCDate()+days);
+    return { y: dt.getUTCFullYear(), m: dt.getUTCMonth()+1, d: dt.getUTCDate() };
+  }
+  function daysInMonth(y,m){ return new Date(Date.UTC(y,m,0)).getUTCDate(); }
+  function firstWeekday(y,m){ return new Date(Date.UTC(y,m-1,1)).getUTCDay(); }
+  function to12h(hhmm){
+    const [hh,mm] = hhmm.split(':').map(Number);
+    const ap = hh >= 12 ? 'PM' : 'AM';
+    let h12 = hh % 12; if(h12 === 0) h12 = 12;
+    return `${h12}:${pad(mm)} ${ap}`;
+  }
+  function isSlotBookable(y,m,d,slot){
+    const [hh,mm] = slot.start.split(':').map(Number);
+    const slotEpoch = istDateTimeToEpoch(y,m,d,hh,mm);
+    const minEpoch = nowMs() + CONFIG.MIN_NOTICE_HOURS*60*60*1000;
+    return slotEpoch >= minEpoch;
+  }
+  function isDateInRange(y,m,d){
+    const t = todayIST();
+    const todayStart = istDateTimeToEpoch(t.y,t.m,t.d,0,0);
+    const dateStart = istDateTimeToEpoch(y,m,d,0,0);
+    const maxD = addDays(t.y,t.m,t.d, CONFIG.MAX_ADVANCE_DAYS);
+    const maxStart = istDateTimeToEpoch(maxD.y,maxD.m,maxD.d,0,0);
+    return dateStart >= todayStart && dateStart <= maxStart;
+  }
+  function dateHasAnyBookableSlot(y,m,d){
+    if(!state.service) return true;
+    return CONFIG.SERVICES[state.service].slots.some(s => isSlotBookable(y,m,d,s));
+  }
+
+  /* ================= DOM SHORTCUTS ================= */
+  const $ = (sel, root) => (root||document).querySelector(sel);
+  const $$ = (sel, root) => Array.from((root||document).querySelectorAll(sel));
+
+  /* ================= STEP TRACKER ================= */
+  const STEP_LABELS = ["Service", "Date & Time", "Your details"];
+  function renderTracker(){
+    const wrap = $('#stepTracker');
+    wrap.innerHTML = '';
+    STEP_LABELS.forEach((label, i) => {
+      const n = i+1;
+      const item = document.createElement('div');
+      item.className = 'flex flex-col items-center gap-1.5';
+      const stone = document.createElement('div');
+      stone.className = 'stone' + (n < state.step ? ' done' : n === state.step ? ' current' : '');
+      stone.innerHTML = n < state.step
+        ? '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        : String(n);
+      const lbl = document.createElement('span');
+      lbl.className = 'text-[11px] font-medium ' + (n === state.step ? 'text-forest' : 'text-muted');
+      lbl.textContent = label;
+      item.appendChild(stone); item.appendChild(lbl);
+      wrap.appendChild(item);
+      if(n < STEP_LABELS.length){
+        const line = document.createElement('div');
+        line.className = 'w-6 sm:w-10 h-px ' + (n < state.step ? 'bg-forest' : 'bg-sage/40');
+        wrap.appendChild(line);
+      }
+    });
+  }
+
+  function goToStep(n){
+    state.step = n;
+    $$('.step-panel').forEach(p => p.classList.remove('active'));
+    const ids = {1:'step1',2:'step2',3:'step3',4:'stepDone'};
+    $('#'+ids[n]).classList.add('active');
+    renderTracker();
+    $('#formCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ================= STEP 1: SERVICE ================= */
+  $$('.service-card').forEach(card => {
+    card.addEventListener('click', () => {
+      $$('.service-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      state.service = card.dataset.service;
+      state.slot = null; // reset downstream selection
+      $('#toStep2').disabled = false;
+    });
+  });
+  $('#toStep2').addEventListener('click', () => {
+    const t = todayIST();
+    state.calYear = t.y; state.calMonth = t.m;
+    renderCalendar();
+    renderSlots();
+    goToStep(2);
+  });
+
+  /* ================= STEP 2: CALENDAR ================= */
+  function renderCalendar(){
+    const t = todayIST();
+    const maxD = addDays(t.y,t.m,t.d, CONFIG.MAX_ADVANCE_DAYS);
+
+    $('#calLabel').textContent = `${MONTH_NAMES[state.calMonth-1]} ${state.calYear}`;
+
+    // Prev/Next bounds
+    const atMinMonth = (state.calYear === t.y && state.calMonth === t.m);
+    const atMaxMonth = (state.calYear === maxD.y && state.calMonth === maxD.m);
+    $('#calPrev').disabled = atMinMonth;
+    $('#calNext').disabled = atMaxMonth;
+
+    const grid = $('#calGrid');
+    grid.innerHTML = '';
+    const blanks = firstWeekday(state.calYear, state.calMonth);
+    const totalDays = daysInMonth(state.calYear, state.calMonth);
+
+    for(let i=0;i<blanks;i++){
+      const cell = document.createElement('div');
+      cell.className = 'cal-day';
+      grid.appendChild(cell);
+    }
+    for(let d=1; d<=totalDays; d++){
+      const cell = document.createElement('div');
+      cell.className = 'cal-day';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = d;
+      const inRange = isDateInRange(state.calYear, state.calMonth, d);
+      const hasSlot = inRange && dateHasAnyBookableSlot(state.calYear, state.calMonth, d);
+      if(!inRange || !hasSlot){
+        btn.disabled = true;
+      } else {
+        btn.addEventListener('click', () => selectDate(state.calYear, state.calMonth, d));
+      }
+      if(state.year === state.calYear && state.month === state.calMonth && state.day === d){
+        btn.classList.add('selected');
+      }
+      cell.appendChild(btn);
+      grid.appendChild(cell);
+    }
+  }
+
+  $('#calPrev').addEventListener('click', () => {
+    if(state.calMonth === 1){ state.calMonth = 12; state.calYear -= 1; } else { state.calMonth -= 1; }
+    renderCalendar();
+  });
+  $('#calNext').addEventListener('click', () => {
+    if(state.calMonth === 12){ state.calMonth = 1; state.calYear += 1; } else { state.calMonth += 1; }
+    renderCalendar();
+  });
+
+  function selectDate(y,m,d){
+    state.year = y; state.month = m; state.day = d;
+    state.slot = null;
+    $('#toStep3').disabled = true;
+    renderCalendar();
+    renderSlots();
+  }
+
+  /* ================= STEP 2: SLOTS ================= */
+  async function fetchBookedSlots(y,m,d, bypassCache){
+    const key = `${state.service}_${dateKey(y,m,d)}`;
+    if(!bypassCache && state.bookedCache[key]) return state.bookedCache[key];
+    if(!CONFIG.GAS_URL || CONFIG.GAS_URL.indexOf('PASTE_') === 0){
+      return []; // not yet configured — treat as nothing booked
+    }
+    try{
+      const url = `${CONFIG.GAS_URL}?action=availability&date=${encodeURIComponent(dateKey(y,m,d))}&service=${encodeURIComponent(state.service)}`;
+      const res = await fetch(url, { method: 'GET' });
+      const data = await res.json();
+      const booked = Array.isArray(data.bookedSlots) ? data.bookedSlots : [];
+      state.bookedCache[key] = booked;
+      return booked;
+    }catch(err){
+      console.error('Availability check failed, proceeding without it:', err);
+      return [];
+    }
+  }
+
+  async function renderSlots(){
+    const slotGrid = $('#slotGrid');
+    const prompt = $('#slotPrompt');
+    slotGrid.innerHTML = '';
+
+    if(state.year === null){
+      prompt.textContent = 'Select a date above to see available times.';
+      prompt.classList.remove('hidden');
+      return;
+    }
+
+    prompt.textContent = 'Checking available times…';
+    prompt.classList.remove('hidden');
+
+    const service = CONFIG.SERVICES[state.service];
+    const booked = await fetchBookedSlots(state.year, state.month, state.day);
+
+    const anyAvailable = service.slots.some(s => isSlotBookable(state.year, state.month, state.day, s) && booked.indexOf(s.start) === -1);
+    prompt.textContent = anyAvailable
+      ? `Available times on ${MONTH_NAMES[state.month-1]} ${state.day} (${service.windowLabel}):`
+      : `No times left on ${MONTH_NAMES[state.month-1]} ${state.day}. Please choose another date.`;
+
+    service.slots.forEach(s => {
+      const bookable = isSlotBookable(state.year, state.month, state.day, s);
+      const isBooked = booked.indexOf(s.start) !== -1;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'slot-btn border border-sage/40 rounded-lg px-3 py-2.5 text-sm font-medium bg-white';
+      btn.textContent = `${to12h(s.start)} – ${to12h(s.end)}`;
+      if(!bookable || isBooked){
+        btn.disabled = true;
+        btn.title = isBooked ? 'Already booked' : 'Too close to now';
+      } else {
+        btn.addEventListener('click', () => {
+          state.slot = s;
+          $$('.slot-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          $('#toStep3').disabled = false;
+        });
+      }
+      slotGrid.appendChild(btn);
+    });
+  }
+
+  $('#toStep3').addEventListener('click', () => {
+    renderFocusChips();
+    renderSummary();
+    goToStep(3);
+  });
+
+  /* ================= STEP 3: DETAILS ================= */
+  function renderFocusChips(){
+    const wrap = $('#focusChips');
+    wrap.innerHTML = '';
+    FOCUS_AREAS.forEach(area => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'chip border border-sage/50 rounded-full px-3.5 py-1.5 text-sm bg-white';
+      chip.textContent = area;
+      if(state.focusAreas.has(area)) chip.classList.add('selected');
+      chip.addEventListener('click', () => {
+        if(state.focusAreas.has(area)){ state.focusAreas.delete(area); chip.classList.remove('selected'); }
+        else { state.focusAreas.add(area); chip.classList.add('selected'); }
+      });
+      wrap.appendChild(chip);
+    });
+  }
+
+  function renderSummary(){
+    const service = CONFIG.SERVICES[state.service];
+    const dateStr = `${MONTH_NAMES[state.month-1]} ${state.day}, ${state.year}`;
+    $('#summaryBox').innerHTML = `
+      <span class="font-semibold">${service.shortLabel}</span><br/>
+      ${dateStr} &middot; ${to12h(state.slot.start)} – ${to12h(state.slot.end)} IST
+    `;
+  }
+
+  function showFieldError(inputEl, message){
+    const err = inputEl.parentElement.querySelector('.field-error') || inputEl.closest('div').querySelector('.field-error');
+    if(err){ err.textContent = message; err.classList.remove('hidden'); }
+    inputEl.classList.add('border-blush-dark');
+  }
+  function clearFieldErrors(){
+    $$('.field-error').forEach(e => { e.classList.add('hidden'); e.textContent=''; });
+    $$('#detailsForm input, #detailsForm textarea').forEach(i => i.classList.remove('border-blush-dark'));
+  }
+
+  function validateStep3(){
+    clearFieldErrors();
+    let valid = true;
+
+    const fullName = $('#fullName').value.trim();
+    if(!fullName){ showFieldError($('#fullName'), 'Please enter your full name.'); valid = false; }
+
+    const email = $('#email').value.trim();
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!email || !emailPattern.test(email)){ showFieldError($('#email'), 'Please enter a valid email address.'); valid = false; }
+
+    const phone = $('#phone').value.trim().replace(/[\s-]/g,'');
+    if(!phone || !/^\d{7,15}$/.test(phone)){ showFieldError($('#phone'), 'Please enter a valid phone number.'); valid = false; }
+
+    const age = $('#age').value;
+    if(!age || Number(age) < 5 || Number(age) > 110){ showFieldError($('#age'), 'Please enter a valid age.'); valid = false; }
+
+    const consentBox = $('#consent');
+    const consentError = $('#consentError');
+    if(!consentBox.checked){
+      consentError.textContent = 'Please confirm you agree before continuing.';
+      consentError.classList.remove('hidden');
+      valid = false;
+    } else {
+      consentError.classList.add('hidden');
+    }
+
+    return valid;
+  }
+
+  /* ================= SUBMIT ================= */
+  function setSubmitting(isSubmitting){
+    state.submitting = isSubmitting;
+    const btn = $('#submitBtn');
+    const label = $('#submitLabel');
+    btn.disabled = isSubmitting;
+    btn.classList.toggle('opacity-70', isSubmitting);
+    label.textContent = isSubmitting ? 'Booking…' : 'Confirm booking';
+    let spinner = $('#submitSpinner');
+    if(isSubmitting && !spinner){
+      spinner = document.createElement('span');
+      spinner.id = 'submitSpinner';
+      spinner.className = 'spinner';
+      btn.appendChild(spinner);
+    } else if(!isSubmitting && spinner){
+      spinner.remove();
+    }
+  }
+
+  $('#submitBtn').addEventListener('click', async () => {
+    if(state.submitting) return;
+    if(!validateStep3()) return;
+
+    $('#submitError').classList.add('hidden');
+    setSubmitting(true);
+
+    // Re-check the chosen slot right before submitting to reduce double-booking risk.
+    const freshBooked = await fetchBookedSlots(state.year, state.month, state.day, true);
+    if(freshBooked.indexOf(state.slot.start) !== -1){
+      setSubmitting(false);
+      $('#submitError').textContent = 'That time slot was just booked by someone else. Please pick another time.';
+      $('#submitError').classList.remove('hidden');
+      state.slot = null;
+      $('#toStep3').disabled = true;
+      renderSlots();
+      goToStep(2);
+      return;
+    }
+
+    const service = CONFIG.SERVICES[state.service];
+    const countryCode = $('#countryCode').value;
+    const phone = $('#phone').value.trim().replace(/[\s-]/g,'');
+    const payload = {
+      fullName: $('#fullName').value.trim(),
+      email: $('#email').value.trim(),
+      phone: `${countryCode} ${phone}`,
+      age: Number($('#age').value),
+      serviceType: service.label,
+      bookingDate: dateKey(state.year, state.month, state.day),
+      slotStart: to12h(state.slot.start),
+      slotEnd: to12h(state.slot.end),
+      focusAreas: Array.from(state.focusAreas).join(', '),
+      notes: $('#notes').value.trim(),
+      status: 'Confirmed',
+    };
+
+    if(!CONFIG.GAS_URL || CONFIG.GAS_URL.indexOf('PASTE_') === 0){
+      setSubmitting(false);
+      $('#submitError').textContent = 'Booking backend is not configured yet. See SETUP_INSTRUCTIONS to add your Apps Script URL.';
+      $('#submitError').classList.remove('hidden');
+      return;
+    }
+
+    try{
+      const res = await fetch(CONFIG.GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // keeps this a "simple" request, avoids CORS preflight
+        body: JSON.stringify(payload),
+      });
+      let result = {};
+      try{ result = await res.json(); }catch(e){ result = { result: 'success' }; }
+      if(result.result === 'error') throw new Error(result.message || 'The server could not save your booking.');
+
+      $('#doneSummary').textContent = `${service.shortLabel} on ${MONTH_NAMES[state.month-1]} ${state.day}, ${state.year} at ${to12h(state.slot.start)} IST. A confirmation is on its way to ${payload.email}.`;
+      goToStep(4);
+    }catch(err){
+      console.error(err);
+      $('#submitError').textContent = "We couldn't save your booking just now. Please check your connection and try again.";
+      $('#submitError').classList.remove('hidden');
+    }finally{
+      setSubmitting(false);
+    }
+  });
+
+  /* ================= NAV: BACK / RESET ================= */
+  $$('[data-back]').forEach(btn => {
+    btn.addEventListener('click', () => goToStep(Number(btn.dataset.back)));
+  });
+
+  $('#bookAnother').addEventListener('click', () => {
+    state.service = null; state.year = null; state.month = null; state.day = null;
+    state.slot = null; state.focusAreas = new Set(); state.bookedCache = {};
+    $$('.service-card').forEach(c => c.classList.remove('selected'));
+    $('#toStep2').disabled = true;
+    $('#toStep3').disabled = true;
+    $('#detailsForm').reset();
+    clearFieldErrors();
+    $('#submitError').classList.add('hidden');
+    goToStep(1);
+  });
+
+  /* ================= INIT ================= */
+  renderTracker();
+})();
+</script>
+</body>
+</html>

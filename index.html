@@ -375,6 +375,7 @@
     calYear: null, calMonth: null,
     focusAreas: new Set(),
     bookedCache: {},
+    blockedDates: new Set(),
     submitting: false,
   };
 
@@ -419,6 +420,7 @@
   }
   function dateHasAnyBookableSlot(y,m,d){
     if(!state.service) return true;
+    if(state.blockedDates.has(dateKey(y,m,d))) return false;
     return CONFIG.SERVICES[state.service].slots.some(s => isSlotBookable(y,m,d,s));
   }
 
@@ -472,12 +474,30 @@
       $('#toStep2').disabled = false;
     });
   });
-  $('#toStep2').addEventListener('click', () => {
+  async function fetchBlockedDays(){
+    if(!CONFIG.GAS_URL || CONFIG.GAS_URL.indexOf('PASTE_') === 0) return new Set();
+    try{
+      const url = `${CONFIG.GAS_URL}?action=blockedDays&service=${encodeURIComponent(state.service)}`;
+      const res = await fetch(url, { method: 'GET' });
+      const data = await res.json();
+      return new Set(Array.isArray(data.blockedDays) ? data.blockedDays : []);
+    }catch(err){
+      console.error('Blocked-days check failed, proceeding without it:', err);
+      return new Set();
+    }
+  }
+
+  $('#toStep2').addEventListener('click', async () => {
+    const btn = $('#toStep2');
+    const originalLabel = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Loading…';
     const t = todayIST();
     state.calYear = t.y; state.calMonth = t.m;
+    state.blockedDates = await fetchBlockedDays();
     renderCalendar();
     renderSlots();
     goToStep(2);
+    btn.disabled = false; btn.textContent = originalLabel;
   });
 
   /* ================= STEP 2: CALENDAR ================= */
@@ -592,7 +612,7 @@
       btn.textContent = `${to12h(s.start)} – ${to12h(s.end)}`;
       if(!bookable || isBooked){
         btn.disabled = true;
-        btn.title = isBooked ? 'Already booked' : 'Too close to now';
+        btn.title = isBooked ? 'Unavailable' : 'Too close to now';
       } else {
         btn.addEventListener('click', () => {
           state.slot = s;
@@ -709,7 +729,7 @@
     const freshBooked = await fetchBookedSlots(state.year, state.month, state.day, true);
     if(freshBooked.indexOf(state.slot.start) !== -1){
       setSubmitting(false);
-      $('#submitError').textContent = 'That time slot was just booked by someone else. Please pick another time.';
+      $('#submitError').textContent = 'That time is no longer available. Please pick another time.';
       $('#submitError').classList.remove('hidden');
       state.slot = null;
       $('#toStep3').disabled = true;
